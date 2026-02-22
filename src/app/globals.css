@@ -8,8 +8,8 @@
   --color-zkira-card-hover: #222222;
   --color-zkira-border: #2A2A2A;
   --color-zkira-border-light: #333333;
-  --color-zkira-green: #00C853;
-  --color-zkira-green-dim: #00C85333;
+  --color-zkira-green: #FF1744;
+  --color-zkira-green-dim: #FF174433;
   --color-zkira-red: #FF1744;
   --color-zkira-red-dim: #FF174433;
   --color-zkira-yellow: #FFD600;
@@ -108,10 +108,10 @@ input[type="number"] {
 /* Route Card Styles */
 .route-card-selected { 
   border-color: var(--color-zkira-green); 
-  box-shadow: 0 0 12px rgba(0, 200, 83, 0.15); 
+  box-shadow: 0 0 12px rgba(255, 23, 68, 0.15); 
 }
 .route-badge-private { 
-  background: rgba(0, 200, 83, 0.15); 
+  background: rgba(255, 23, 68, 0.15); 
   color: var(--color-zkira-green); 
 }
 .route-badge-standard { 

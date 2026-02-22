@@ -31,6 +31,5 @@ export const STATUS_POLL_INTERVAL_MS = 5000;
 export const TERMINAL_STATUSES = [4, 5, 6, 7];
 
 export const SOCIAL_LINKS = {
-  telegram: 'https://t.me/zkira',
-  twitter: 'https://x.com/zkira',
+  twitter: 'https://x.com/zkira_xyz',
 };

@@ -81,6 +81,7 @@ export interface ExchangeRequest {
   to: string;
   addressTo: string;
   anonymous: boolean;
+  inviteCode?: string;
 }
 
 export interface ExchangeResponse {

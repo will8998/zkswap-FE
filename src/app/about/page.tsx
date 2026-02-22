@@ -9,7 +9,7 @@ export default function AboutPage() {
         <div className="max-w-4xl mx-auto text-center">
           <h1 
             className="font-orbitron font-normal text-4xl md:text-5xl lg:text-6xl leading-tight mb-8"
-            style={{ textShadow: '0 0 30px rgba(0, 200, 83, 0.3)' }}
+            style={{ textShadow: '0 0 30px rgba(255, 23, 68, 0.3)' }}
           >
             PRIVACY IS NOT A CRIME.
           </h1>

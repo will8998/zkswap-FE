@@ -11,10 +11,11 @@ import SwapButton from './SwapButton'
 import { TokenSelector } from './TokenSelector'
 
 interface SwapCardProps {
-  onSwapCreated: (exchange: ExchangeResponse) => void
+  inviteCode: string | null;
+  onSwapCreated: (exchange: ExchangeResponse) => void;
 }
 
-export default function SwapCard({ onSwapCreated }: SwapCardProps) {
+export default function SwapCard({ inviteCode, onSwapCreated }: SwapCardProps) {
   const {
     fromToken,
     toToken,
@@ -63,9 +64,10 @@ export default function SwapCard({ onSwapCreated }: SwapCardProps) {
         to: toToken.id,
         addressTo: destinationAddress,
         anonymous: selectedRoute.routeType === 'private',
+        inviteCode: inviteCode || undefined,
       })
-
       if (exchange) {
+        localStorage.removeItem('zkira-invite-code');
         onSwapCreated(exchange)
       }
     } catch (error) {

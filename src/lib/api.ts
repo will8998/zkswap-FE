@@ -68,7 +68,7 @@ export async function getQuote(params: {
   return fetchJson<QuoteResponse>(`${API_BASE}/quote?${searchParams}`);
 }
 
-export async function createExchange(data: ExchangeRequest): Promise<ExchangeResponse> {
+export async function createExchange(data: ExchangeRequest & { inviteCode?: string }): Promise<ExchangeResponse> {
   return fetchJson<ExchangeResponse>(`${API_BASE}/exchange`, {
     method: 'POST',
     headers: {
@@ -106,4 +106,12 @@ export async function getRouteQuotes(params: {
 
 export async function getSwapProviders(): Promise<SwapProvider[]> {
   return fetchJson<SwapProvider[]>(`${API_BASE}/swaps`);
+}
+
+export async function validateInviteCode(code: string): Promise<{ valid: boolean; used: boolean }> {
+  return fetchJson<{ valid: boolean; used: boolean }>(`${API_BASE}/invite/validate`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ code }),
+  });
 }
