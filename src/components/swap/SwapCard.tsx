@@ -54,6 +54,7 @@ export default function SwapCard({ onSwapCreated }: SwapCardProps) {
   const getSwapButtonLabel = () => {
     if (exchangeLoading) return 'Swapping...'
     if (!fromToken || !toToken) return 'Select tokens'
+    if (fromToken && toToken && fromToken.id === toToken.id) return 'Select different tokens'
     if (!amount || parseFloat(amount) <= 0) return 'Enter amount'
     if (!destinationAddress) return 'Enter destination address'
     if (quoteLoading) return 'Getting quote...'
@@ -65,6 +66,7 @@ export default function SwapCard({ onSwapCreated }: SwapCardProps) {
     return (
       !fromToken ||
       !toToken ||
+      fromToken?.id === toToken?.id ||
       !amount ||
       parseFloat(amount) <= 0 ||
       !destinationAddress ||

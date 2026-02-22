@@ -21,12 +21,28 @@ export class ApiError extends Error {
 
 async function fetchJson<T>(url: string, options?: RequestInit): Promise<T> {
   const response = await fetch(url, options);
-
   if (!response.ok) {
-    const message = `API Error: ${response.status} ${response.statusText}`;
+    // Try to parse structured error from backend
+    let message = `API Error: ${response.status} ${response.statusText}`;
+    try {
+      const body = await response.json();
+      if (body && typeof body === 'object') {
+        // Backend returns { error: "...", status: N, details: {...} }
+        // Next.js proxy wraps it as { error: "{json string}" }
+        if (typeof body.error === 'string') {
+          try {
+            const parsed = JSON.parse(body.error);
+            message = parsed.error || parsed.message || body.error;
+          } catch {
+            message = body.error;
+          }
+        }
+      }
+    } catch {
+      // response wasn't JSON, use default message
+    }
     throw new ApiError(response.status, message);
   }
-
   return response.json() as Promise<T>;
 }
 

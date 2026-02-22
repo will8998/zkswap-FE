@@ -22,7 +22,7 @@ export function useQuote({ amount, from, to, anonymous }: UseQuoteParams) {
   const debouncedAmount = useDebounce(amount, QUOTE_DEBOUNCE_MS);
 
   useEffect(() => {
-    if (!debouncedAmount || debouncedAmount <= 0 || !from || !to) {
+    if (!debouncedAmount || debouncedAmount <= 0 || !from || !to || from.id === to.id) {
       setQuote(null);
       setLoading(false);
       setError(null);

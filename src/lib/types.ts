@@ -11,11 +11,8 @@ export interface Network {
   icon: string;
 }
 
-export interface MinMaxRange {
-  min: number;
-  max: number;
-}
-
+// HoudiniSwap returns minMax as [min, max] tuples
+export type MinMaxRange = [number, number];
 export interface TokenMinMax {
   cex: MinMaxRange | null;
   anon: MinMaxRange | null;
