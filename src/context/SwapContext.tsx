@@ -1,7 +1,8 @@
 'use client';
 
-import { createContext, useContext, useState, useCallback, type ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react';
 import type { Token, QuoteResponse, RouteQuote, ExchangeResponse, SwapStep } from '@/lib/types';
+import { getTokens } from '@/lib/api';
 
 interface SwapState {
   fromToken: Token | null;
@@ -48,6 +49,42 @@ const SwapContext = createContext<SwapContextValue | null>(null);
 
 export function SwapProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<SwapState>(initialState);
+
+  // Set default USDT tokens on mount
+  useEffect(() => {
+    const setDefaultTokens = async () => {
+      // Only set defaults if user hasn't already selected tokens
+      if (state.fromToken !== null) return;
+      
+      try {
+        const tokens = await getTokens();
+        
+        // Find USDT on Ethereum for fromToken
+        const fromToken = tokens.find(t => t.symbol === 'USDT' && t.network.shortName === 'ETH');
+        
+        // Find USDT on other networks for toToken, try in order
+        const toToken = 
+          tokens.find(t => t.symbol === 'USDT' && t.network.shortName === 'TRX') ||
+          tokens.find(t => t.symbol === 'USDT' && t.network.shortName === 'TRON') ||
+          tokens.find(t => t.symbol === 'USDT' && t.network.shortName === 'BSC') ||
+          tokens.find(t => t.symbol === 'USDT' && t.network.name !== 'Ethereum');
+        
+        // Set both tokens if found
+        if (fromToken && toToken) {
+          setState(prev => ({
+            ...prev,
+            fromToken,
+            toToken
+          }));
+        }
+      } catch (error) {
+        // Silently fail if token fetch fails
+        console.debug('Failed to set default tokens:', error);
+      }
+    };
+    
+    setDefaultTokens();
+  }, []); // Empty dependency array - only run once on mount
 
   const setFromToken = useCallback((token: Token | null) => {
     setState(prev => ({ ...prev, fromToken: token, quote: null, selectedRoute: null }));

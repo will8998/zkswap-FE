@@ -30,9 +30,6 @@ export default function Footer() {
           </span>
         </div>
         
-        <span className="text-zkira-text-muted">
-          CHARTS POWERED BY HOUDINISWAP
-        </span>
         
         <div className="flex items-center space-x-4">
           <a
