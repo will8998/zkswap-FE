@@ -44,10 +44,7 @@ export default function AddressInput({ value, onChange, token, error }: AddressI
   }
 
   const getPlaceholder = () => {
-    if (token?.network?.shortName) {
-      return `Enter ${token.network.shortName} address`
-    }
-    return 'Select a token first'
+    return 'Receiving Wallet Address'
   }
 
   const displayError = error || validationError
@@ -55,7 +52,7 @@ export default function AddressInput({ value, onChange, token, error }: AddressI
   return (
     <div className="mt-4">
       <label className="block text-xs text-zkira-text-secondary mb-2">
-        Destination Address
+        Receiving Wallet Address
       </label>
       
       <div className="relative">
@@ -66,7 +63,7 @@ export default function AddressInput({ value, onChange, token, error }: AddressI
           onBlur={handleBlur}
           placeholder={getPlaceholder()}
           disabled={!token}
-          className="bg-zkira-input rounded-lg p-3 pr-12 text-sm font-mono text-white w-full border border-transparent focus:border-zkira-border-light outline-none placeholder-zkira-text-muted disabled:opacity-50"
+          className="bg-zkira-input rounded-lg p-3 pr-12 text-sm text-white w-full border border-transparent focus:border-zkira-border-light outline-none placeholder-zkira-text-muted disabled:opacity-50"
         />
         
         <button

@@ -17,10 +17,10 @@ export default function SwapDirectionButton() {
     <div className="flex justify-center -my-3 relative z-10">
       <button
         onClick={handleClick}
-        className="w-10 h-10 bg-zkira-border rounded-full flex items-center justify-center hover:bg-zkira-border-light transition-all duration-200 hover:scale-110"
+        className="w-10 h-10 bg-zkira-card border border-zkira-border rounded-full flex items-center justify-center hover:scale-105 transition-all duration-200"
       >
         <svg
-          className={`w-5 h-5 text-zkira-text-secondary transition-transform duration-300 ${
+          className={`w-4 h-4 text-zkira-text-secondary transition-transform duration-300 ${
             isFlipping ? 'rotate-180' : ''
           }`}
           fill="none"

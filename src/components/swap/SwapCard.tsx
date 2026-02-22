@@ -1,15 +1,11 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useSwap } from '@/context/SwapContext'
-import { useTokens } from '@/hooks/useTokens'
-import { useQuote } from '@/hooks/useQuote'
 import { useExchange } from '@/hooks/useExchange'
 import type { ExchangeResponse } from '@/lib/types'
 import TokenInput from './TokenInput'
 import SwapDirectionButton from './SwapDirectionButton'
-import QuoteDisplay from './QuoteDisplay'
-import AnonymousToggle from './AnonymousToggle'
 import AddressInput from './AddressInput'
 import SwapButton from './SwapButton'
 import { TokenSelector } from './TokenSelector'
@@ -23,43 +19,25 @@ export default function SwapCard({ onSwapCreated }: SwapCardProps) {
     fromToken,
     toToken,
     amount,
-    anonymous,
     destinationAddress,
-    quote,
+    selectedRoute,
     setFromToken,
     setToToken,
     setAmount,
-    setAnonymous,
     setDestinationAddress,
-    setQuote,
   } = useSwap()
 
-  const { tokens, search } = useTokens()
-  const { quote: fetchedQuote, loading: quoteLoading, error: quoteError } = useQuote({
-    amount: amount ? parseFloat(amount) : null,
-    from: fromToken,
-    to: toToken,
-    anonymous,
-  })
   const { create: createExchange, loading: exchangeLoading, error: exchangeError } = useExchange()
-
   const [tokenSelectorOpen, setTokenSelectorOpen] = useState<'from' | 'to' | null>(null)
-
-  useEffect(() => {
-    if (fetchedQuote && fetchedQuote !== quote) {
-      setQuote(fetchedQuote)
-    }
-  }, [fetchedQuote, quote, setQuote])
 
   const getSwapButtonLabel = () => {
     if (exchangeLoading) return 'Swapping...'
     if (!fromToken || !toToken) return 'Select tokens'
     if (fromToken && toToken && fromToken.id === toToken.id) return 'Select different tokens'
     if (!amount || parseFloat(amount) <= 0) return 'Enter amount'
-    if (!destinationAddress) return 'Enter destination address'
-    if (quoteLoading) return 'Getting quote...'
-    if (!quote) return 'Enter amount'
-    return 'Swap'
+    if (!selectedRoute) return 'Select a route'
+    if (!destinationAddress) return 'Enter address'
+    return 'Proceed To Swap'
   }
 
   const isSwapDisabled = () => {
@@ -69,15 +47,14 @@ export default function SwapCard({ onSwapCreated }: SwapCardProps) {
       fromToken?.id === toToken?.id ||
       !amount ||
       parseFloat(amount) <= 0 ||
+      !selectedRoute ||
       !destinationAddress ||
-      !quote ||
-      exchangeLoading ||
-      quoteLoading
+      exchangeLoading
     )
   }
 
   const handleSwap = async () => {
-    if (isSwapDisabled() || !fromToken || !toToken) return
+    if (isSwapDisabled() || !fromToken || !toToken || !selectedRoute) return
 
     try {
       const exchange = await createExchange({
@@ -85,7 +62,7 @@ export default function SwapCard({ onSwapCreated }: SwapCardProps) {
         from: fromToken.id,
         to: toToken.id,
         addressTo: destinationAddress,
-        anonymous,
+        anonymous: selectedRoute.routeType === 'private',
       })
 
       if (exchange) {
@@ -96,16 +73,17 @@ export default function SwapCard({ onSwapCreated }: SwapCardProps) {
     }
   }
 
-  const error = quoteError || exchangeError
-
   return (
-    <div className="bg-zkira-card rounded-xl border border-zkira-border p-6 w-full max-w-md mx-auto">
+    <div className="bg-zkira-card rounded-xl border border-zkira-border p-6 w-full">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-semibold text-zkira-text">Swap</h2>
-        <AnonymousToggle
-          enabled={anonymous}
-          onChange={setAnonymous}
-        />
+        <button className="text-zkira-text-secondary hover:text-zkira-text transition-colors">
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+              d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+        </button>
       </div>
 
       <div className="space-y-1">
@@ -124,21 +102,12 @@ export default function SwapCard({ onSwapCreated }: SwapCardProps) {
         <TokenInput
           label="To"
           token={toToken}
-          amount={quote ? String(quote.amountOut) : ''}
+          amount={selectedRoute ? String(selectedRoute.amountOut) : ''}
           onTokenClick={() => setTokenSelectorOpen('to')}
           readOnly={true}
-          loading={quoteLoading}
-          usdValue={quote ? String(quote.amountOutUsd) : undefined}
+          usdValue={selectedRoute ? String(selectedRoute.amountOutUsd) : undefined}
         />
       </div>
-
-      {quote && fromToken && toToken && (
-        <QuoteDisplay
-          quote={quote}
-          fromToken={fromToken}
-          toToken={toToken}
-        />
-      )}
 
       <AddressInput
         value={destinationAddress}
@@ -155,9 +124,9 @@ export default function SwapCard({ onSwapCreated }: SwapCardProps) {
         />
       </div>
 
-      {error && (
+      {exchangeError && (
         <div className="text-zkira-red text-sm text-center mt-3">
-          {error}
+          {exchangeError}
         </div>
       )}
 

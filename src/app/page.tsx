@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import SwapCard from '@/components/swap/SwapCard';
+import RoutesPanel from '@/components/swap/RoutesPanel';
 import { StatusTracker } from '@/components/status/StatusTracker';
 import { useSwap } from '@/context/SwapContext';
 import type { ExchangeResponse } from '@/lib/types';
@@ -36,16 +37,15 @@ function SwapPage() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] px-4">
-      <div className="mb-8 text-center">
-        <h1 className="text-3xl font-bold text-zkira-text mb-2">
-          Private Token Swaps
-        </h1>
-        <p className="text-zkira-text-secondary text-sm max-w-sm mx-auto">
-          Swap tokens across chains with optional privacy routing through XMR
-        </p>
+    <div className="flex items-center justify-center min-h-[60vh] px-4">
+      <div className="flex flex-col lg:flex-row gap-6 w-full max-w-4xl">
+        <div className="w-full lg:w-[450px]">
+          <SwapCard onSwapCreated={handleSwapCreated} />
+        </div>
+        <div className="w-full lg:w-[450px]">
+          <RoutesPanel />
+        </div>
       </div>
-      <SwapCard onSwapCreated={handleSwapCreated} />
     </div>
   );
 }

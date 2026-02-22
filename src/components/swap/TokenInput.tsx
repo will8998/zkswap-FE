@@ -44,31 +44,43 @@ export default function TokenInput({
           onChange={handleAmountChange}
           placeholder={loading ? '' : '0'}
           disabled={readOnly || loading}
-          className="bg-transparent text-white text-2xl font-mono flex-1 border-none outline-none placeholder-zkira-text-muted min-w-0"
+          className="bg-transparent text-white text-3xl font-light flex-1 border-none outline-none placeholder-zkira-text-muted min-w-0"
         />
         
         <button
           onClick={onTokenClick}
-          className="flex items-center gap-2 bg-zkira-border rounded-lg px-3 py-2 hover:bg-zkira-border-light transition-colors"
+          className="flex items-center gap-3 bg-zkira-border rounded-lg px-3 py-2 hover:bg-zkira-border-light transition-colors"
         >
           {token ? (
             <>
-              <img 
-                src={token.icon}
-                alt={token.symbol}
-                className="w-5 h-5 rounded-full"
-              />
-              <span className="text-white font-medium">
-                {token.symbol}
-              </span>
+              <div className="relative">
+                <img 
+                  src={token.icon}
+                  alt={token.symbol}
+                  className="w-6 h-6 rounded-full"
+                />
+                <img 
+                  src={token.network.icon}
+                  alt={token.network.name}
+                  className="absolute -bottom-1 -right-1 w-3 h-3 rounded-full border border-zkira-card"
+                />
+              </div>
+              <div className="flex flex-col items-start">
+                <span className="text-white font-semibold text-sm">
+                  {token.symbol}
+                </span>
+                <span className="text-zkira-text-secondary text-xs">
+                  On {token.network.name}
+                </span>
+              </div>
             </>
           ) : (
             <span className="text-zkira-text-secondary">
-              Select
+              Select token
             </span>
           )}
           <svg
-            className="w-4 h-4 text-zkira-text-secondary"
+            className="w-4 h-4 text-zkira-text-secondary ml-auto"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -78,16 +90,11 @@ export default function TokenInput({
         </button>
       </div>
 
-      <div className="flex items-center justify-between mt-2">
+      <div className="mt-2">
         <div className="text-xs text-zkira-text-secondary">
           {usdValue && !loading ? `$${formatNumber(parseFloat(usdValue))}` : ''}
           {loading && (
             <div className="animate-pulse bg-zkira-border rounded h-3 w-16"></div>
-          )}
-        </div>
-        <div className="text-xs text-zkira-text-secondary">
-          {token && !loading && (
-            <span>Balance: —</span>
           )}
         </div>
       </div>

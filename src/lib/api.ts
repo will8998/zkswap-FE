@@ -2,6 +2,8 @@ import { API_BASE } from './constants';
 import type {
   Token,
   QuoteResponse,
+  RouteQuote,
+  SwapProvider,
   ExchangeRequest,
   ExchangeResponse,
   StatusResponse,
@@ -86,4 +88,22 @@ export async function getHealth(): Promise<HealthResponse> {
 
 export async function getVolume(): Promise<VolumeResponse> {
   return fetchJson<VolumeResponse>(`${API_BASE}/volume`);
+}
+
+export async function getRouteQuotes(params: {
+  amount: number;
+  from: string;
+  to: string;
+}): Promise<RouteQuote[]> {
+  const searchParams = new URLSearchParams({
+    amount: params.amount.toString(),
+    from: params.from,
+    to: params.to,
+  });
+
+  return fetchJson<RouteQuote[]>(`${API_BASE}/quotes?${searchParams}`);
+}
+
+export async function getSwapProviders(): Promise<SwapProvider[]> {
+  return fetchJson<SwapProvider[]>(`${API_BASE}/swaps`);
 }

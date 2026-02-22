@@ -56,6 +56,25 @@ export interface QuoteResponse {
   logoUrl: string;
 }
 
+export type RouteType = 'standard' | 'private';
+
+export interface RouteQuote extends QuoteResponse {
+  routeType: RouteType;
+  routeLabel: string;
+  percentDiff: number;
+}
+
+export interface SwapProvider {
+  name: string;
+  shortName: string;
+  logoUrl: string;
+  slippage: number;
+  markupSupported: boolean;
+  txUrl: string;
+  enabled: boolean;
+  isDex: boolean;
+}
+
 export interface ExchangeRequest {
   amount: number;
   from: string;
